@@ -1,7 +1,12 @@
-# --- ADMIN AUTO-LAUNCH ---
+# --- STABLE ADMIN AUTO-LAUNCH ---
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-    exit
+    Write-Host "Elevating to Admin, hold on bro..." -ForegroundColor Cyan
+    try {
+        Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    } catch {
+        Write-Host "You clicked 'No' on the UAC prompt, you asshole!" -ForegroundColor Red
+    }
+    exit # This kills the non-admin window safely after the admin one starts
 }
 
 Add-Type -AssemblyName PresentationFramework
